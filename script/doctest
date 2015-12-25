@@ -1,0 +1,18 @@
+#!/bin/bash
+if [[ "$OSTYPE" =~ ^darwin ]]; then
+  READLINK=greadlink
+else
+  READLINK=readlink
+fi
+SCRIPTPATH=$($READLINK -f $0)
+SCRIPTDIR=$(dirname $SCRIPTPATH)
+REPODIR=$(dirname $SCRIPTDIR)
+
+if [[ "$1" == "" ]]; then
+  echo Please specify test source file
+  exit 1
+fi
+
+cd $REPODIR
+stack exec doctest -- -isrc -Wall -fno-warn-type-defaults $* 2>&1 | less
+
